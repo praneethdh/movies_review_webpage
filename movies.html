@@ -1,0 +1,380 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Reviews</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1em 0;
+        }
+        .logo {
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+        .search-bar {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .search-bar input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+        .movies {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .movie {
+            width: 18%; /* Width to fit 5 images in a row */
+            margin-bottom: 20px;
+        }
+        .movie img {
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .movie-title {
+            text-align: center;
+            padding: 10px 0;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        .review-page {
+            display: none;
+        }
+        .review-page.active {
+            display: block;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .write-review {
+            margin: 20px 0;
+        }
+        .write-review textarea {
+            width: 100%;
+            padding: 10px;
+        }
+        .write-review button {
+            display: block;
+            margin: 10px 0;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="https://imgs.search.brave.com/9kpiO4GW8iRKB3TR1X9fvohuVcJt_QthW7J5wfTqZH0/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL00v/TVY1Qk56SXdOR1k0/WXpJdE5XUTNaUzAw/Wm1Vd0xUZzNOVFV0/Wm1aa01XTmxOR1Ew/WTJJMlhrRXlYa0Zx/Y0dkZVFYVnlOelkx/T0RVMU9Ua0AuanBn" alt="Logo">
+            Movie Reviews
+        </div>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search for movies...">
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="movies">
+            <div class="movie">
+                <img src="https://resizing.flixster.com/OBCMbeYEWS5tI2QhErFskxKyEa0=/206x305/v2/https://resizing.flixster.com/mPJp85eApHd8ih9XF5E9d3-2LbM=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzUxODlkZDE1LTQyYjUtNDg5ZS05NjZmLWMxZDk1YWZhN2E1ZC5qcGc=" alt="Deadpool & Wolverine" onclick="openTrailer('trailer1')">
+                <div class="movie-title" onclick="toggleReviewPage('movie1')">Deadpool & Wolverine</div>
+            </div>
+            <div class="movie">
+                <img src="https://resizing.flixster.com/O0pjqjtTK_D0HrCm9fj2iMfTuws=/206x305/v2/https://resizing.flixster.com/mt0h9J-wJE8c6lBDiQ-iNS9clE0=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzL2JlNTlhNDNlLWVjZTctNDIwZi05YWU2LTk5NTVhNGEzZDE4MC5qcGc=" alt="Movie 2" onclick="openTrailer('trailer2')">
+                <div class="movie-title" onclick="toggleReviewPage('movie2')">Despicable Me 4</div>
+            </div>
+            <div class="movie">
+                <img src="https://resizing.flixster.com/cwjMjwuUWS7ztcYTpBOWfmvLpXc=/206x305/v2/https://resizing.flixster.com/8WDuutxgKyPBi2vRX1xldieyACo=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzQ5YmVmYzhmLWVlZTUtNDcyMy05YTU0LTczY2ZhZWEzZjM1Ny5qcGc=" alt="Movie 3" onclick="openTrailer('trailer3')">
+                <div class="movie-title" onclick="toggleReviewPage('movie3')">Raayan</div>
+            </div>
+            <div class="movie">
+                <img src="https://resizing.flixster.com/Fgj1iNMFnISjrYFOy7gE2WLSn5I=/206x305/v2/https://resizing.flixster.com/Io5vRDy6MmJX_zkEKXke5HRcaRw=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzL2MzNDNiZTE2LWI5OWMtNDRlYy1hOWFhLWE3ZmYzMzQ4NmUyMC5qcGc=" alt="Movie 3" onclick="openTrailer('trailer4')">
+                <div class="movie-title" onclick="toggleReviewPage('movie4')">kill</div>
+            </div>
+            <div class="movie">
+                <img src="https://resizing.flixster.com/k5qPpZHf8Zf18-z0683v5ntBlac=/206x305/v2/https://resizing.flixster.com/pVvhS2mjaqcVoTTe8mLXNnI7OeM=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzVjYWNkYjA2LTdjOTktNDgzMy05ODAyLThlYTliMjZlOTJlYS5qcGc="Movie 3" onclick="openTrailer('trailer5')">
+                <div class="movie-title" onclick="toggleReviewPage('movie5')">Bad Boys: Ride or Die</div>
+            </div>
+            <div class="movie">
+                <img src="https://resizing.flixster.com/iifEowWyBRg-gfB1MT1he-udS-M=/206x305/v2/https://resizing.flixster.com/7Xkr0e53o1befeXfkMvqrmvKhhE=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzYxMzQ5ZmUwLTRlMzItNDhmNC04ODQ5LTM2OTc0NTdkYzQyOS5qcGc=" alt="Movie 3" onclick="openTrailer('trailer6')">
+                <div class="movie-title" onclick="toggleReviewPage('movie6')">Bad Newz</div>
+            </div>
+            <div class="movie">
+                <img src="https://resizing.flixster.com/X-k7-qm7k0NOJO2NEUR4M7p17fk=/206x305/v2/https://resizing.flixster.com/lu8nXLlZR6Yna_PqVzqMu0Pr8IM=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzc2MWM0YTc3LTUzOTItNDcxNC05YTM0LTAxMTgyYTNkZmZmZC5qcGc=" alt="Movie 3" onclick="openTrailer('trailer7')">
+                <div class="movie-title" onclick="toggleReviewPage('movie7')">The Fall Guy</div>
+            </div>
+            <div class="movie">
+                <img src="https://resizing.flixster.com/CjLiJWsIFF8tt9fbdhiw1XZ9VwA=/206x305/v2/https://resizing.flixster.com/fQRM2zCMTnNHVks1Gno0YKsmWcA=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzBkOWU3MjYyLWM5NWQtNGNkNC05MDA2LWVlMzI4N2RkMjRkMS5qcGc=" alt="Movie 3" onclick="openTrailer('trailer8')">
+                <div class="movie-title" onclick="toggleReviewPage('movie8')">Dìdi</div>
+            </div>
+            <div class="movie">
+                <img src="https://resizing.flixster.com/c4QKeMKWagW3vMxLfDjx3eW0HJY=/206x305/v2/https://resizing.flixster.com/4Uu0NJFNDL4jaK_InBVH7aH1y14=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzL2I0OTQzNjZiLWE0MDQtNGEwNi1iODNjLTVkZWY4NzZjNjY0YS5qcGc=" alt="Movie 3" onclick="openTrailer('trailer9')">
+                <div class="movie-title" onclick="toggleReviewPage('movie9')">The Beast Within</div>
+            </div>
+            <div class="movie">
+                <img src="https://resizing.flixster.com/GXxKUWvX420RloS4ePC7lmfAQEw=/206x305/v2/https://resizing.flixster.com/52tNaAdGhYWG4PukngNz7iOu4NA=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzIyNDlkYjk2LTUwZmQtNDgzOS04ZGIyLWI3NzZlMWE0OGNkNi5qcGc=" alt="Movie 3" onclick="openTrailer('trailer10')">
+                <div class="movie-title" onclick="toggleReviewPage('movie10')">A Quiet Place: Day One</div>
+            </div>
+        </div>
+    </div>
+        
+    <div id="movie1" class="review-page">
+        <h1>Deadpool & Wolverine</h1>
+        <div class="review">
+            <h2>Review</h2>
+            <p>Ryan Reynolds makes himself at home in the MCU with acerbic wit while Hugh Jackman provides an Adamantium backbone to proceedings in Deadpool & Wolverine, an irreverent romp with a surprising soft spot for a bygone era of superhero movies.</p>
+        </div>
+        <div class="write-review">
+            <h2>Write a Review</h2>
+            <textarea rows="5" placeholder="Write your review here..."></textarea>
+            <button>Submit</button>
+        </div>
+    </div>
+    
+    <div id="movie2" class="review-page">
+        <h1>Despicable Me 4</h1>
+        <div class="review">
+            <h2>Review</h2>
+            <p>In the first Despicable Me movie in seven years, Gru, the world's favorite supervillain-turned-Anti-Villain League-agent, returns for an exciting, bold new era of Minions mayhem in Illumination's Despicable Me 4. Following the 2022 summer blockbuster phenomenon of Illumination's Minions: The Rise of Gru, which earned almost $1 billion worldwide, the biggest global animated franchise in history now begins a new chapter as Gru (Oscar® nominee Steve Carrell) and Lucy (Oscar® nominee Kristen Wiig) and their girls--Margo (Miranda Cosgrove), Edith (Dana Gaier) and Agnes (Madison Polan)--welcome a new member to the Gru family, Gru Jr., who is intent on tormenting his dad. Gru faces a new nemesis in Maxime Le Mal (Emmy winner Will Ferrell) and his femme fatale girlfriend Valentina (Emmy nominee Sofia Vergara), and the family is forced to go on the run.</p>
+        </div>
+        <div class="write-review">
+            <h2>Write a Review</h2>
+            <textarea rows="5" placeholder="Write your review here..."></textarea>
+            <button>Submit</button>
+        </div>
+    </div>
+    
+    <div id="movie3" class="review-page">
+        <h1>Raayan</h1>
+        <div class="review">
+            <h2>Review</h2>
+            <p>After his family is killed, a young man trains to avenge their murders. Seeking those responsible, his quest leads him through the criminal underworld.</p>
+        </div>
+        <div class="write-review">
+            <h2>Write a Review</h2>
+            <textarea rows="5" placeholder="Write your review here..."></textarea>
+            <button>Submit</button>
+        </div>
+    </div>
+
+    <div id="movie4" class="review-page">
+        <h1>kill</h1>
+        <div class="review">
+            <h2>Review</h2>
+            <p>During a train trip to New Delhi, a pair of commandos face an army of invading bandits.</p>
+        </div>
+        <div class="write-review">
+            <h2>Write a Review</h2>
+            <textarea rows="5" placeholder="Write your review here..."></textarea>
+            <button>Submit</button>
+        </div>
+    </div>
+
+    <div id="movie5" class="review-page">
+        <h1>Bad Boys: Ride or Die</h1>
+        <div class="review">
+            <h2>Review</h2>
+            <p>This Summer, the world's favorite Bad Boys are back with their iconic mix of edge-of-your seat action and outrageous comedy but this time with a twist: Miami's finest are now on the run.</p>
+        </div>
+        <div class="write-review">
+            <h2>Write a Review</h2>
+            <textarea rows="5" placeholder="Write your review here..."></textarea>
+            <button>Submit</button>
+        </div>
+    </div>
+
+    <div id="movie6" class="review-page">
+        <h1>Bad Newz</h1>
+        <div class="review">
+            <h2>Review</h2>
+            <p>A crazy laugh riot which will show the outcomes of two sophisticated Punjabi men and a Punjabi girl. One of the men has a one night stand with the girl and somehow, craziness happens when she is pregnant unexpectedly.</p>
+        </div>
+        <div class="write-review">
+            <h2>Write a Review</h2>
+            <textarea rows="5" placeholder="Write your review here..."></textarea>
+            <button>Submit</button>
+        </div>
+    </div>
+
+    <div id="movie7" class="review-page">
+        <h1>The Fall Guy</h1>
+        <div class="review">
+            <h2>Review</h2>
+            <p>He's a stuntman, and like everyone in the stunt community, he gets blown up, shot, crashed, thrown through windows and dropped from the highest of heights, all for our entertainment. And now, fresh off an almost career-ending accident, this working-class hero has to track down a missing movie star, solve a conspiracy and try to win back the love of his life while still doing his day job. What could possibly go right?</p>
+        </div>
+        <div class="write-review">
+            <h2>Write a Review</h2>
+            <textarea rows="5" placeholder="Write your review here..."></textarea>
+            <button>Submit</button>
+        </div>
+    </div>
+
+    <div id="movie8" class="review-page">
+        <h1>Dìdi</h1>
+        <div class="review">
+            <h2>Review</h2>
+            <p>In 2008, during the last month of summer before high school begins, an impressionable 13-year-old Taiwanese American boy learns what his family can't teach him: how to skate, how to flirt, and how to love your mom.</p>
+        </div>
+        <div class="write-review">
+            <h2>Write a Review</h2>
+            <textarea rows="5" placeholder="Write your review here..."></textarea>
+            <button>Submit</button>
+        </div>
+    </div>
+
+    <div id="movie9" class="review-page">
+        <h1>The Beast Within</h1>
+        <div class="review">
+            <h2>Review</h2>
+            <p>After a series of strange events leads her to question her family's isolated life on a fortified compound deep in the English wilds, 10-year-old Willow follows her parents on one of their secret late-night treks to the heart of the ancient forest. But upon witnessing her father undergo a terrible transformation, she too becomes ensnared by the dark ancestral secret they've tried so desperately to conceal.</p>
+        </div>
+        <div class="write-review">
+            <h2>Write a Review</h2>
+            <textarea rows="5" placeholder="Write your review here..."></textarea>
+            <button>Submit</button>
+        </div>
+    </div>
+
+    <div id="movie10" class="review-page">
+        <h1>A Quiet Place: Day One</h1>
+        <div class="review">
+            <h2>Review</h2>
+            <p>Experience the day the world went quiet.</p>
+        </div>
+        <div class="write-review">
+            <h2>Write a Review</h2>
+            <textarea rows="5" placeholder="Write your review here..."></textarea>
+            <button>Submit</button>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2024 Movie Reviews
+    </footer>
+
+    <script>
+        function toggleReviewPage(pageId) {
+            const reviewPage = document.getElementById(pageId);
+            reviewPage.classList.toggle('active');
+        }
+
+        function openTrailer(trailerId) {
+            let trailerUrl = '';
+            switch(trailerId) {
+                case 'trailer1':
+                    trailerUrl = 'https://www.youtube.com/watch?v=Idh8n5XuYIA&pp=ygUWZGVhZHBvb2wgYW5kIHdvbHZlcmluZQ%3D%3D';
+                    break;
+                case 'trailer2':
+                    trailerUrl = 'https://www.youtube.com/watch?v=qQlr9-rF32A&pp=ygUPRGVzcGljYWJsZSBNZSA0';
+                    break;
+                case 'trailer3':
+                    trailerUrl = 'https://www.youtube.com/watch?v=UzTm--hNa6Q&pp=ygUGUmFheWFu';
+                    break;
+                case 'trailer4':
+                    trailerUrl = 'https://www.youtube.com/watch?v=y2HZqeVeBNc&pp=ygUEa2lsbA%3D%3D';
+                    break;
+                case 'trailer5':
+                    trailerUrl = 'https://www.youtube.com/watch?v=ZTQyMmz-cQE&pp=ygUVQmFkIEJveXM6IFJpZGUgb3IgRGll';
+                    break;  
+                case 'trailer6':
+                    trailerUrl = 'https://www.youtube.com/watch?v=uV50UfcIT68&pp=ygUIQmFkIE5ld3o%3D';
+                    break;       
+                case 'trailer7':
+                    trailerUrl = 'https://www.youtube.com/watch?v=Szyxo0r_X2w&pp=ygUMVGhlIEZhbGwgR3V5';
+                    break;       
+                case 'trailer8':
+                    trailerUrl = 'https://www.youtube.com/watch?v=e6gve8GtSuU&pp=ygUFRMOsZGk%3D';
+                    break;       
+                case 'trailer9':
+                    trailerUrl = 'https://www.youtube.com/watch?v=wKIIMA-4GuU&pp=ygUQVGhlIEJlYXN0IFdpdGhpbg%3D%3D';
+                    break;       
+                case 'trailer10':
+                    trailerUrl = 'https://www.youtube.com/watch?v=YPY7J-flzE8&pp=ygUWQSBRdWlldCBQbGFjZTogRGF5IE9uZQ%3D%3D';
+                    break;       
+                // Add more cases as needed
+            }
+            window.open(trailerUrl, '_blank');
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const filter = searchInput.value.toLowerCase();
+            const movieTitles = document.querySelectorAll('.movie-title');
+            movieTitles.forEach(title => {
+                const parentDiv = title.parentElement;
+                if (title.textContent.toLowerCase().includes(filter)) {
+                    parentDiv.style.display = "";
+                } else {
+                    parentDiv.style.display = "none";
+                }
+            });
+        });
+    </script>
+<script>
+    // Function to handle the submission and show a message
+    function handleSubmit(event) {
+        // Prevent the form from submitting and refreshing the page
+        event.preventDefault();
+        
+        // Show a confirmation message in a new tab
+        const message = 'Submitted';
+        const newTab = window.open('', '_blank');
+        newTab.document.write(`
+            <html>
+            <head>
+                <title>Submission Status</title>
+            </head>
+            <body style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
+                <h1>${message}</h1>
+                <p>Review submitted successfully!</p>
+            </body>
+            </html>
+        `);
+    }
+
+    // Attach click event listener to all submit buttons
+    const submitButtons = document.querySelectorAll('.write-review button');
+    submitButtons.forEach(button => {
+        button.addEventListener('click', handleSubmit);
+    });
+</script>
+
+</body>
+</html>
